@@ -7,12 +7,7 @@ import { ChatWindow } from './ChatWindow'
 import './App.css'
 import { io } from 'socket.io-client'
 
-const serverUrl =
-  typeof window === 'undefined'
-    ? 'http://localhost:5000'
-    : `${window.location.protocol}//${window.location.hostname}:5000`
-
-const socket = io(serverUrl, {
+const socket = io({
   autoConnect: true,
   transports: ['websocket', 'polling'],
 })
@@ -284,7 +279,7 @@ function App() {
 
     try {
       const formattedNumber = formatChatId(newContactNumber.trim())
-      const response = await fetch(`${serverUrl}/api/send`, {
+      const response = await fetch('/api/send', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
