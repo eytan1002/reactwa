@@ -7,10 +7,11 @@ import { ChatWindow } from './ChatWindow'
 import './App.css'
 import { io } from 'socket.io-client'
 
-const socket = io({
+// הוספנו את הכתובת של Render כפרמטר ראשון
+const socket = io('https://serberonly.onrender.com', {
   autoConnect: true,
   transports: ['websocket', 'polling'],
-})
+});
 
 function getMessagePreview(message) {
   if (message?.text) {

@@ -8,12 +8,12 @@ export default defineConfig({
     host: true,
     proxy: {
       '/socket.io': {
-        target: 'http://localhost:5000',
+        target: 'https://serberonly.onrender.com',
         ws: true,
         changeOrigin: true,
       },
       '/api': {
-        target: 'http://localhost:5000',
+        target: 'https://serberonly.onrender.com',
         changeOrigin: true,
       },
     },
