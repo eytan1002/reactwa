@@ -67,71 +67,72 @@ function App() {
   )
   const cameraSupported = canScanWithCamera
 
-  useEffect(() => {
+useEffect(() => {
     socket.on('connect', () => {
-      setQrSrc('')
-      setScanError('')
-      setIsSocketConnected(true)
-    })
+      console.log('Socket connected to server!');
+      setIsSocketConnected(true);
+      setScanError('');
+    });
 
     socket.on('disconnect', () => {
-      setStatus('DISCONNECTED')
-      setIsSocketConnected(false)
-    })
+      setStatus('DISCONNECTED');
+      setIsSocketConnected(false);
+    });
 
     socket.on('connect_error', () => {
-      setStatus('DISCONNECTED')
-      setIsSocketConnected(false)
-    })
+      setStatus('DISCONNECTED');
+      setIsSocketConnected(false);
+    });
 
     socket.on('whatsapp-status', (newStatus) => {
-      setStatus(newStatus)
+      console.log('Received whatsapp status from server:', newStatus);
+      setStatus(newStatus);
       if (newStatus === 'CONNECTED') {
-        setQrSrc('')
+        setQrSrc('');
       }
-    })
+    });
 
     socket.on('whatsapp-qr', (qrBase64) => {
-      setQrSrc(qrBase64)
-      setStatus('QR_READY')
-    })
+      setQrSrc(qrBase64);
+      setStatus('QR_READY');
+    });
 
     socket.on('whatsapp-chats', (serverChats) => {
-      setChats(serverChats)
+      setChats(serverChats);
       if (!isMobile && !selectedChatId && serverChats.length > 0) {
-        setSelectedChatId(serverChats[0].id)
+        setSelectedChatId(serverChats[0].id);
       }
-    })
+    });
 
     socket.on('whatsapp-chat-messages', ({ chatId, messages }) => {
-      setMessagesByChat((prev) => ({ ...prev, [chatId]: messages }))
-    })
+      setMessagesByChat((prev) => ({ ...prev, [chatId]: messages }));
+    });
 
     socket.on('whatsapp-message-received', (msg) => {
       setMessagesByChat((prev) => {
-        const existing = prev[msg.chatId] || []
-        return { ...prev, [msg.chatId]: [...existing, msg] }
-      })
+        const existing = prev[msg.chatId] || [];
+        return { ...prev, [msg.chatId]: [...existing, msg] };
+      });
       setChats((prevChats) =>
         prevChats.map((chat) =>
           chat.id === msg.chatId
             ? { ...chat, lastMessage: msg.text, lastMessageTime: msg.timestamp }
             : chat,
         ),
-      )
-    })
+      );
+    });
 
     return () => {
-      socket.off('connect')
-      socket.off('disconnect')
-      socket.off('connect_error')
-      socket.off('whatsapp-status')
-      socket.off('whatsapp-qr')
-      socket.off('whatsapp-chats')
-      socket.off('whatsapp-chat-messages')
-      socket.off('whatsapp-message-received')
-    }
-  }, [isMobile, selectedChatId])
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off('connect_error');
+      socket.off('whatsapp-status');
+      socket.off('whatsapp-qr');
+      socket.off('whatsapp-chats');
+      socket.off('whatsapp-chat-messages');
+      socket.off('whatsapp-message-received');
+    };
+  }, [isMobile, selectedChatId]);
 
   useEffect(() => {
     if (!scannerActive) {
